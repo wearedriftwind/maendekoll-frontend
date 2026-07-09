@@ -27,16 +27,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return Boolean(match?.active && match.role === "admin");
     },
     async jwt({ token, profile }) {
-      const slackUserId = profile?.["https://slack.com/user_id"] as
-        | string
-        | undefined;
-      if (slackUserId) token.slackUserId = slackUserId;
+      if (profile) {
+        token.slackUserId = profile["https://slack.com/user_id"] as string;
+        token.name = profile.name as string;
+        token.email = profile.email as string;
+        token.picture = profile.picture as string;
+      }
       return token;
     },
     async session({ session, token }) {
       if (token.slackUserId) {
         session.user.slackUserId = token.slackUserId as string;
       }
+      if (token.name) session.user.name = token.name as string;
+      if (token.email) session.user.email = token.email as string;
+      if (token.picture) session.user.image = token.picture as string;
       return session;
     },
   },
