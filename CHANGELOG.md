@@ -3,6 +3,33 @@
 Alla releaser till produktion (Vercel) dokumenteras här, nyast överst.
 Se Notion-backloggen för fullständig kontext per story.
 
+## v0.3.0 – 2026-07-09
+
+Adminwebbens grund är klar: den kan nu prata med bot+API:et på ett
+återanvändbart sätt, med ett gemensamt sätt att visa fel.
+
+### Vad som är nytt
+
+- Delad felvy för hela adminytan om ett anrop mot bot+API:et misslyckas,
+  istället för att sidan kraschar.
+- Startsidan gör nu ett riktigt anrop mot `GET /questions` och visar antalet
+  registrerade frågor, som bevis på att kopplingen fungerar i produktion.
+
+### Vad som har ändrats
+
+- Inget i användarflödet, bara grundarbete inför frågehanteringsvyn.
+
+### Buggar fixade
+
+- Inga i denna sprint.
+
+### Annan relevant information
+
+- Grunden i Sprint 4 (Story 1-3) är nu klar. Nästa story är
+  frågehanteringsvyn (Story 4), den första riktiga adminvyn.
+- Omfattar Story 3 i Notion-backloggen: "Koppla adminwebben mot
+  bot+API:et".
+
 ## v0.2.0 – 2026-07-09
 
 Admin kan nu logga in i adminwebben med sitt Slack-konto.
