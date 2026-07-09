@@ -3,6 +3,35 @@
 Alla releaser till produktion (Vercel) dokumenteras här, nyast överst.
 Se Notion-backloggen för fullständig kontext per story.
 
+## v0.4.0 – 2026-07-09
+
+Adminwebben har fått sin första riktiga vy: frågehantering, under en ny
+sektionsindelad struktur.
+
+### Vad som är nytt
+
+- Startsidan är nu en hub med länkar till två sektioner: **Rapport** och
+  **Inställningar** (Rapport-sidorna byggs i kommande storys).
+- Inställningar → Frågor: lista, skapa och redigera frågor (text,
+  svarstyp, aktiv/inaktiv) direkt mot bot+API:et.
+
+### Vad som har ändrats
+
+- Inloggad-som/logga ut flyttat från startsidan till en delad header som
+  syns på alla adminsidor.
+
+### Buggar fixade
+
+- `/settings` gav 404 direkt efter första deployen (saknad index-sida) -
+  fixat med en redirect till frågevyn.
+
+### Annan relevant information
+
+- Omfattar Story 4 i Notion-backloggen: "Bygg vy för att hantera frågor".
+- Nya frågor skapas som aktiva som standard, men utan schema (frekvens/tid)
+  skickas de inte automatiskt - det läggs till i nästa story
+  (schemainställningar).
+
 ## v0.3.0 – 2026-07-09
 
 Adminwebbens grund är klar: den kan nu prata med bot+API:et på ett
