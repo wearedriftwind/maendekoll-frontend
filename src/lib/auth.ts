@@ -19,17 +19,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const slackUserId = profile?.["https://slack.com/user_id"] as
         | string
         | undefined;
-      console.log("[signIn] Slack-profil:", JSON.stringify(profile));
       if (!slackUserId) return false;
 
       const users = await apiClient.get<AdminUser[]>("/users");
       const match = users.find((user) => user.slack_user_id === slackUserId);
-      console.log(
-        "[signIn] slackUserId:",
-        slackUserId,
-        "match:",
-        JSON.stringify(match),
-      );
 
       return Boolean(match?.active && match.role === "admin");
     },
