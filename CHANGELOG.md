@@ -3,6 +3,29 @@
 Alla releaser till produktion (Vercel) dokumenteras här, nyast överst.
 Se Notion-backloggen för fullständig kontext per story.
 
+## v0.5.0 – 2026-07-09
+
+Frågor kan nu schemaläggas i adminwebben.
+
+### Vad som är nytt
+
+- Ny "Schema"-länk per fråga i Inställningar → Frågor.
+- Schemasida där frekvens (veckovis/varannan vecka/månadsvis), veckodag,
+  tid och kanaltyp (DM eller gemensam kanal) sätts per fråga.
+- Visar senast skickad-tidpunkt om frågan redan gått ut minst en gång.
+
+### Vad som har ändrats
+
+- Inget i övriga vyer.
+
+### Buggar fixade
+
+- Inga i denna sprint.
+
+### Annan relevant information
+
+- Omfattar Story 5 i Notion-backloggen: "Bygg vy för schemainställningar".
+
 ## v0.4.0 – 2026-07-09
 
 Adminwebben har fått sin första riktiga vy: frågehantering, under en ny
