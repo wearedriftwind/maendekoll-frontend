@@ -110,6 +110,17 @@ här) — det listar exakt vilka storys och vilket API som ska finnas på plats.
 från "LÄS FÖRST – Kontext"-kortet i backloggen — den här filen upprepar inte
 allt, utgå från backloggen för fullständig kontext per story.
 
+## Implementationsplaner — spara i repot
+
+Varje implementationsplan (för en sprint eller en enskild feature/story) ska
+sparas som en markdown-fil i `.claude/plans/`, t.ex. `.claude/plans/sprint-4.md`
+eller `.claude/plans/fragehantering-vy.md`. Detta gäller planer som tas fram
+i Plan-läge eller annars efter att ha resonerat fram en plan utifrån
+Notion-storys — inte tillfälliga att-göra-listor för en enskild konversation.
+Planen ska finnas kvar i repot så den går att slå upp i en senare session,
+även efter att konversationen där den skapades är borta. Samma konvention som
+i backend-repot.
+
 ## Miljövariabler (frontend)
 
 | Variabel | Syfte |
@@ -154,20 +165,24 @@ i repot (tomma värden), committa aldrig riktiga nycklar.
 
 ## Subagents (kostnadseffektiv delegering)
 
-Detta repo har två fördefinierade subagents i `.claude/agents/`, samma
-mönster som backend-repot. De körs på en billigare modell (Haiku) i egen,
-isolerad kontext — huvudsessionen (som bygger själva adminwebben) fortsätter
-på sin vanliga modell och belastas inte av git-output eller Notion-svar.
+Två fördefinierade subagents i `.claude/agents/`, identiska i båda
+Måendekoll-repona (bot+API och admin-frontend). De körs på en billigare
+modell (Haiku) i egen, isolerad kontext — huvudsessionen fortsätter på sin
+vanliga modell och belastas inte av git-output eller Notion-svar.
 
 - **`git-exec`** — kör ALL faktisk git-exekvering (branch, add, commit,
   push, merge). Fattar inga egna beslut om VAD som ska göras; huvudsessionen
   avgör om Definition of Done är uppfylld och formulerar commit-/release-
-  texten, `git-exec` bara kör den redan beslutade sekvensen. Kör aldrig
+  texten, `git-exec` kör bara den redan beslutade sekvensen. Kör aldrig
   git-kommandon direkt i huvudsessionen — delegera hit.
 - **`notion-ops`** — sköter allt arbete mot den gemensamma Notion-backloggen:
-  skapa/uppdatera storys, ändra properties, flytta mellan sprintar,
-  uppdatera "LÄS FÖRST"-kort. Fattar inga arkitekturbeslut, bara utför redan
-  beslutade ändringar.
+  skapa/uppdatera storys, ändra properties, flytta mellan sprintar, uppdatera
+  "LÄS FÖRST"-kort. Använd den även när en uppgift kräver en plan eller ett
+  beslut (t.ex. "gör en plan för sprint X"): låt `notion-ops` hämta och
+  sammanställa den råa Notion-informationen, och gör själva
+  resonemanget/planeringen i huvudkontexten utifrån det den lämnar tillbaka.
+  Agenten ska aldrig själv resonera fram en plan eller ett beslut — bara
+  hämta/skriva data.
 
 Båda är konfigurerade för automatisk delegering (proaktiv `description` +
 denna policy i CLAUDE.md) — du ska inte behöva be om delegeringen varje
