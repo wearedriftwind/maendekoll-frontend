@@ -135,11 +135,15 @@ i repot (tomma värden), committa aldrig riktiga nycklar.
   Vitest som testramverk.
 - **En branch per story**, namngiven efter storyn (t.ex.
   `feature/fragehantering-vy`). Små, fokuserade commits under arbetet —
-  inte en enda stor commit i slutet.
+  inte en enda stor commit i slutet. **Delegera själva git-exekveringen till
+  `git-exec`-subagenten** (se "Subagents" nedan) — huvudsessionen avgör vad
+  som ska committas och skriver texten, `git-exec` kör kommandona.
 - **Merge till `main` först när storyns Definition of Done är uppfylld**
   (se storyn i Notion-backloggen). Om ett beroende inte är klart: lämna
   branchen öppen och flagga varför, merga inte ofärdigt.
-- Uppdatera storyns `Status`-fält i Notion till `Pågår`/`Klar` löpande.
+- Uppdatera storyns `Status`-fält i Notion till `Pågår`/`Klar` löpande —
+  **delegera detta och allt annat Notion-arbete till `notion-ops`-subagenten**
+  (se "Subagents" nedan).
 - **Release notes vid varje deploy till Vercel som faktiskt går till
   produktion**: lägg dem i en `CHANGELOG.md` i repo-roten (nyast överst),
   med samma struktur som backend-repots — Vad som är nytt / Vad som har
@@ -147,6 +151,29 @@ i repot (tomma värden), committa aldrig riktiga nycklar.
   miljövariabler, manuella steg). Kort, på svenska, riktat till Thomas och
   Lars, inte en teknisk commit-logg.
 - Inga hemligheter hårdkodade — allt via miljövariabler.
+
+## Subagents (kostnadseffektiv delegering)
+
+Detta repo har två fördefinierade subagents i `.claude/agents/`, samma
+mönster som backend-repot. De körs på en billigare modell (Haiku) i egen,
+isolerad kontext — huvudsessionen (som bygger själva adminwebben) fortsätter
+på sin vanliga modell och belastas inte av git-output eller Notion-svar.
+
+- **`git-exec`** — kör ALL faktisk git-exekvering (branch, add, commit,
+  push, merge). Fattar inga egna beslut om VAD som ska göras; huvudsessionen
+  avgör om Definition of Done är uppfylld och formulerar commit-/release-
+  texten, `git-exec` bara kör den redan beslutade sekvensen. Kör aldrig
+  git-kommandon direkt i huvudsessionen — delegera hit.
+- **`notion-ops`** — sköter allt arbete mot den gemensamma Notion-backloggen:
+  skapa/uppdatera storys, ändra properties, flytta mellan sprintar,
+  uppdatera "LÄS FÖRST"-kort. Fattar inga arkitekturbeslut, bara utför redan
+  beslutade ändringar.
+
+Båda är konfigurerade för automatisk delegering (proaktiv `description` +
+denna policy i CLAUDE.md) — du ska inte behöva be om delegeringen varje
+gång, bara märka att Claude gör det. Om Claude ändå kör git- eller
+Notion-anrop direkt i huvudsessionen: påminn om att det ska gå via
+respektive subagent.
 
 ## Definition of Done — gäller generellt, utöver vad varje story specificerar
 
