@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { apiClient } from "@/lib/apiClient";
 import type { Question } from "@/types/questions";
 import { createQuestion, updateQuestion } from "./actions";
@@ -78,12 +79,20 @@ export default async function QuestionsPage() {
               />
               Aktiv
             </label>
-            <button
-              type="submit"
-              className="self-start rounded-full border border-black/20 px-5 py-2 text-sm dark:border-white/20"
-            >
-              Spara
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                type="submit"
+                className="rounded-full border border-black/20 px-5 py-2 text-sm dark:border-white/20"
+              >
+                Spara
+              </button>
+              <Link
+                href={`/settings/questions/${question.id}/schedule`}
+                className="text-sm underline"
+              >
+                Schema
+              </Link>
+            </div>
           </form>
         ))}
         {questions.length === 0 && (
