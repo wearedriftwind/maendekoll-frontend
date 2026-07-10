@@ -11,6 +11,9 @@ export default function ReportLayout({
         <Link href="/report" className="font-medium">
           Trendgraf
         </Link>
+        <Link href="/report/responses" className="font-medium">
+          Svarslogg
+        </Link>
       </nav>
       {children}
     </div>

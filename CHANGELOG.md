@@ -3,6 +3,31 @@
 Alla releaser till produktion (Vercel) dokumenteras här, nyast överst.
 Se Notion-backloggen för fullständig kontext per story.
 
+## v0.8.0 – 2026-07-10
+
+Admin kan nu se en logg över samtliga svar, inte bara aggregerad statistik.
+
+### Vad som är nytt
+
+- Ny sida i Rapport → Svarslogg (`/report/responses`): tabell över samtliga
+  svar, nyast först — datum, namn, mående (som emoji) och fritext.
+- Ny delad Rapport-sektion med nav mellan flikarna (samma mönster som
+  Inställningar sedan tidigare).
+
+### Vad som har ändrats
+
+- Inget i övriga vyer.
+
+### Buggar fixade
+
+- Inga i denna sprint.
+
+### Annan relevant information
+
+- Omfattar Story 9 i Notion-backloggen: "Bygg vy för svarslogg".
+- Story 10 (Trendgraf) är fortfarande under arbete på en egen branch, inte
+  släppt än — väntar på testdata för att kunna verifieras ordentligt.
+
 ## v0.7.0 – 2026-07-10
 
 Admin kan nu se och hantera alla anställda, inklusive vem som är
