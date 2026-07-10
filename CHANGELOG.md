@@ -3,6 +3,37 @@
 Alla releaser till produktion (Vercel) dokumenteras här, nyast överst.
 Se Notion-backloggen för fullständig kontext per story.
 
+## v0.7.0 – 2026-07-10
+
+Admin kan nu se och hantera alla anställda, inklusive vem som är
+eskalationskontakt.
+
+### Vad som är nytt
+
+- Ny sida i Inställningar → Anställda (`/settings/employees`): tabell över
+  alla användare med namn och roll.
+- Kryssruta per rad för att pausa/aktivera en anställd, utan att röra
+  historik.
+- Kryssruta per rad för att välja eskalationskontakt. Endast en person kan
+  vara kontakt åt gången — att kryssa en ny ersätter automatiskt den
+  föregående.
+- Båda kryssrutorna sparar direkt vid klick, ingen separat "Spara"-knapp.
+
+### Vad som har ändrats
+
+- Inget i övriga vyer.
+
+### Buggar fixade
+
+- Inga i denna sprint.
+
+### Annan relevant information
+
+- Omfattar Story 7 ("Bygg vy för att välja eskalationskontakt") och Story 8a
+  ("Bygg vy för att hantera anställda") i Notion-backloggen — byggda som en
+  gemensam vy istället för två separata sidor, ett beslut Lars tog under
+  arbetet med storyn.
+
 ## v0.6.0 – 2026-07-10
 
 Admin kan nu skicka en fråga direkt till alla aktiva, utan att vänta på schema.

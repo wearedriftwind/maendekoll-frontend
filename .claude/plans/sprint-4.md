@@ -1,6 +1,6 @@
 # Sprint 4 — Adminwebbens grund + samtliga vyer (bas-version)
 
-## Status (senast uppdaterad 2026-07-10, pausat efter Story 6)
+## Status (senast uppdaterad 2026-07-10, pausat efter Story 7 + 8a)
 
 - **Story 1-6: Klara.** Grunden (Next.js/Vercel, Slack OAuth via Auth.js,
   `apiClient.ts`), frågehantering (`/settings/questions`),
@@ -9,39 +9,44 @@
   https://github.com/wearedriftwind/maendekoll-frontend/pull/6) är byggda,
   mergade till `main` och verifierade i produktion
   (https://maendekoll-frontend.vercel.app/).
-- **Nästa upp: Story 7 + 8a — Anställda och eskalationskontakt, i samma vy.**
-  Se "Nästa steg" nedan.
-- **Story 9 och framåt:** oförändrat väntande, se Byggordning nedan.
+- **Story 7 + 8a: Klar.** Anställda + eskalationskontakt i en gemensam vy
+  (`/settings/employees`, PR
+  https://github.com/wearedriftwind/maendekoll-frontend/pull/7), mergad till
+  `main`. Verifierad **lokalt** mot riktiga API:et (se notis om
+  lokal-verifiering nedan), inte via Vercel preview.
+- **Nästa upp: Story 10 — Trendgraf**, bygger `/report`-skalet. Se
+  Byggordning nedan.
+- **Story 9, 11, 8b, 12:** oförändrat väntande, se Byggordning nedan.
 
-### Nästa steg — Story 7 + 8a: Hantera anställda (slagits ihop)
+**Notis om verifieringsmetod (2026-07-10):** Vercels preview-URL:er är unika
+per branch, vilket krockar med Slack OAuths krav på en förregistrerad,
+statisk redirect-URL — att lägga till en ny redirect-URL i Slack för varje
+feature-branch är inte hållbart. Löst genom att lägga till
+`http://localhost:3000/api/auth/callback/slack` som en permanent,
+**andra** redirect-URL i Slack-appens OAuth-inställningar (utöver
+produktions-URL:en) och sätta upp en lokal `.env.local` med samma riktiga
+värden som Vercels Preview-miljövariabler. Från och med Story 7 + 8a
+verifieras varje story därför lokalt via `npm run dev` mot riktiga
+bot+API:et, inte på en Vercel preview-deploy — detta uppfyller DoD:s krav på
+"manuellt verifierad i webbläsaren mot backend-API:et" precis lika bra, utan
+återkommande Slack-konfiguration per branch.
 
-**Beslut (2026-07-10, Lars):** Story 7 (eskalationskontakt) och Story 8a
-(hantera anställda) byggs som **en gemensam vy** istället för två separata
-sidor — samma tabell över användare används för båda syftena. Ändrar
-sektionstabellen nedan: Story 7:s path blir samma som 8a:s
-(`/settings/employees`), ingen egen `/settings/escalation-contact`-sida.
+### Nästa steg — Story 10: Trendgraf
 
-- **Branch:** `feature/hantera-anstallda`.
-- **Plats i UI:** `/settings/employees` — en tabell med alla användare
-  (`GET /users`). Kolumner: namn, roll, **Aktiv** (kryssruta, pausar/
-  aktiverar via `PATCH /users/:id` med `{ active }`) och
-  **Eskalationskontakt** (kryssruta, sätter via
-  `PATCH /users/:id/escalation-contact`).
-- **Enda-kontakt-regeln:** exakt en användare kan vara eskalationskontakt.
-  Eskalationskryssrutan är semantiskt en radioknapp — att kryssa en ny rad
-  ersätter automatiskt den föregående (backend-servicen `setEscalationContact`
-  rensar övriga innan den sätter den nya), inte lägger till ytterligare en.
-  Formuläret måste göra det uppenbart att det är ett byte, inte ett
-  tillägg (se "Vad vi har bestämt" i CLAUDE.md).
-- **UX-mönster:** varje kryssruta i tabellen är sin egen mini-form (dold
-  `id`-fält + kryssruta) som skickas automatiskt vid ändring (`onChange` →
-  `requestSubmit()`), istället för en explicit "Spara"-knapp per rad — snabbare
-  för en tabell med flera rader och kryssrutor.
-- **DoD (från backloggen, båda storys):**
-  - Story 8a: Admin kan se alla anställda och pausa/aktivera dem utan att
-    röra historik.
-  - Story 7: Admin kan se och byta eskalationskontakt, med tydlig
-    indikation om vem som är aktuell kontakt just nu.
+**Varning att kolla innan bygget startar:** `GET /stats/aggregate?from=&to=`
+(verifierad mot `maendekollen/src/statsService.ts` 2026-07-10) returnerar just
+nu **ett enda aggregat** för hela `[from, to]`-intervallet (`totalResponses`,
+`averageEmoji`, `distribution`, m.m.) — **ingen tidsseriedata**. En riktig
+trendgraf behöver punkter över tid (t.ex. en per vecka). Innan UI:t byggs:
+kontrollera om backend-repot hunnit lägga till bucket/gruppering (kolla
+`maendekollen/CHANGELOG.md` och `statsService.ts` på nytt), annars behöver
+frontend själv göra flera anrop med olika `from`/`to`-fönster för att bygga
+serien, eller be backend-repot om en tidsserie-variant.
+
+- **Branch:** `feature/trendgraf`.
+- **Bygger:** `/report`-skalet (`report/layout.tsx`, nav mellan
+  Rapport-flikarna) + `/report/page.tsx` (default-fliken).
+- **Diagram:** Recharts, ännu inte installerat (`npm install recharts`).
 
 ## Context
 
@@ -154,8 +159,8 @@ types/
    `(admin)/page.tsx` till en hub-sida.~~ **Klar**
 2. ~~Story 5 — Schemainställningar~~ **Klar**
 3. ~~Story 6 — Skicka direkt (åtgärd i frågelistan)~~ **Klar**
-4. **Story 7 + 8a — Anställda + eskalationskontakt, samma vy** ← nästa
-5. **Story 10** — Trendgraf, bygger `/report`-skalet
+4. ~~Story 7 + 8a — Anställda + eskalationskontakt, samma vy~~ **Klar**
+5. **Story 10** — Trendgraf, bygger `/report`-skalet ← nästa
 6. Story 9 — Svarslogg
 7. Story 11 — Periodjämförelse
 8. **Story 8b** (omskriven) — Individuell historikvy (Rapport), länkad från 8a
