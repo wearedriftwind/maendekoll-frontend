@@ -1,6 +1,6 @@
 # Sprint 4 — Adminwebbens grund + samtliga vyer (bas-version)
 
-## Status (senast uppdaterad 2026-07-10, Story 9 klar, Story 10 pausad)
+## Status (senast uppdaterad 2026-07-10, testdata klar, Story 10 återupptagen)
 
 - **Story 1-6: Klara.** Grunden (Next.js/Vercel, Slack OAuth via Auth.js,
   `apiClient.ts`), frågehantering (`/settings/questions`),
@@ -19,22 +19,30 @@
   `main`. Bygger även en egen `/report`-skalfil (nav), eftersom Story 10 —
   som normalt skulle bygga det skalet — låg pausad och obekräftad på egen
   branch när Story 9 startades (se notis nedan om branch-avstämning).
-- **Story 10 — Trendgraf: Kod byggd på `feature/trendgraf`, INTE mergad.**
-  Pausad i väntan på testdata (Lars bygger den i backend-repot, se
-  `.claude/plans/`-notis i den branchens commit). Manuell verifiering gick
-  inte att bedöma tillförlitligt med bara en månads riktig data. Fortsätt
-  enligt "Nästa steg" nedan när testdata finns.
+- **Story 10 — Trendgraf: Återupptagen 2026-07-10.** Testdata finns nu i
+  Supabase (748 testsvar, 2025-01-06 till idag, se notis om testdata nedan).
+  `feature/trendgraf` mergad med main; konflikten i `report/layout.tsx` (två
+  separata nav-länkar från Story 9 och Story 10) löst manuellt — navet har nu
+  både "Trendgraf" och "Svarslogg". Fortsätter enligt "Nästa steg" nedan.
 - **Story 11, 8b, 12:** oförändrat väntande, se Byggordning nedan.
 
-**Notis om branch-avstämning (2026-07-10):** `feature/trendgraf` och
+**Notis om branch-avstämning (2026-07-10, löst):** `feature/trendgraf` och
 `feature/svarslogg` grenade båda ut från main innan den andra mergades, och
-båda innehåller en egen version av `report/layout.tsx` (skalet/navet för
-Rapport-sektionen). `main` har nu Story 9:s version (bara "Svarslogg"-länken).
-När `feature/trendgraf` återupptas kommer den branchen fortfarande ha sin
-egen gamla version av `report/layout.tsx` från när den skapades — den måste
-uppdateras (rebase mot main eller manuell ändring) så navet får båda länkarna
-("Trendgraf" + "Svarslogg") innan den PR:as, annars skriver den över Story 9:s
-länk. Flagga detta för git-exec när det blir aktuellt.
+båda hade lagt till en egen nav-länk i samma `report/layout.tsx`. Löst genom
+`git merge main` på `feature/trendgraf` och manuell konfliktlösning så båda
+länkarna finns kvar.
+
+**Notis om testdata (2026-07-10):** Backend-repot (`maendekollen`) har fått
+ett `?dataset=production|test|all`-filter på samtliga list-endpoints (`GET
+/questions`, `/users`, `/users/:id/responses`, `/responses`,
+`/stats/aggregate`), dokumenterat i `maendekollen/API.md`. **Default är
+`production` om parametern utelämnas** — exakt samma beteende som innan detta
+lades till. Adminwebben skickar aldrig `?dataset=`, så inget i redan byggd
+eller kommande kod behöver ändras för att fungera korrekt i produktion.
+Testdatan (14 testanvändare `TESTUSER-01`…`14`, 748 svar) användes bara för
+att **temporärt** verifiera Story 10 lokalt (se "Nästa steg") — den
+temporära ändringen reverteras innan merge, koden som mergas till main
+använder fortfarande produktionsdefault.
 
 **Notis om verifieringsmetod (2026-07-10):** Vercels preview-URL:er är unika
 per branch, vilket krockar med Slack OAuths krav på en förregistrerad,
@@ -49,7 +57,7 @@ bot+API:et, inte på en Vercel preview-deploy — detta uppfyller DoD:s krav på
 "manuellt verifierad i webbläsaren mot backend-API:et" precis lika bra, utan
 återkommande Slack-konfiguration per branch.
 
-### Nästa steg — Story 10: Trendgraf (återupptas när testdata finns)
+### Nästa steg — Story 10: Trendgraf (aktiv igen, testdata finns)
 
 **Bekräftat 2026-07-10:** `GET /stats/aggregate?from=&to=` returnerar
 fortfarande ett enda aggregat per anrop, ingen tidsseriedata (oförändrat
@@ -59,18 +67,18 @@ intervallet [äldsta svar, nu] i månadsbuckets (max 24, för att inte explodera
 om historiken blir lång) och gör ett parallellt anrop per bucket mot
 `/stats/aggregate`.
 
-- **Branch:** `feature/trendgraf` (öppen sedan tidigare, inte mergad).
-- **Byggt på den branchen:** `report/page.tsx` (månadsbucket-logik),
+- **Branch:** `feature/trendgraf`, nu mergad med main (konflikt i
+  `report/layout.tsx` löst, se branch-avstämningsnotisen ovan).
+- **Byggt på branchen:** `report/page.tsx` (månadsbucket-logik),
   `report/TrendChart.tsx` (Recharts, klientkomponent), `types/stats.ts`.
   `npm install recharts` klart.
 - **Kvar innan merge:**
-  1. Uppdatera branchens `report/layout.tsx` mot mains version (se notis om
-     branch-avstämning ovan) så Svarslogg-länken från Story 9 inte försvinner.
-  2. Manuell verifiering i webbläsaren mot en databas med data spridd över
-     flera månader — nuvarande riktiga data ligger bara i juli 2026, vilket
-     gör grafen svår att bedöma visuellt.
-  3. Kör `npm run build`/`npm run lint` en gång till (redan gröna vid pausen).
-  4. Commit/push/PR + CHANGELOG + Notion-uppdatering.
+  1. Manuell verifiering i webbläsaren mot testdatan (748 svar,
+     2025-01-06 → idag) via en **temporär** lokal ändring
+     (`&dataset=test` på de två `/stats/aggregate`/`/responses`-anropen i
+     `report/page.tsx`) — reverteras innan commit, se notis om testdata ovan.
+  2. `npm run build`/`npm run lint` en gång till.
+  3. Commit/push/PR + CHANGELOG + Notion-uppdatering.
 
 ## Context
 
