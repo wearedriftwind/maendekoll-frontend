@@ -15,6 +15,12 @@ function baseUrl(): string {
   return url;
 }
 
+function withDataset(path: string): string {
+  if (process.env.MAENDEKOLL_INCLUDE_TEST_DATA !== "true") return path;
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}dataset=all`;
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${baseUrl()}${path}`, {
     ...init,
@@ -33,7 +39,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const apiClient = {
-  get: <T>(path: string) => request<T>(path),
+  get: <T>(path: string) => request<T>(withDataset(path)),
   post: <T>(path: string, body: unknown) =>
     request<T>(path, {
       method: "POST",

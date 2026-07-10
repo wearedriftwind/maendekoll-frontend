@@ -127,6 +127,7 @@ i backend-repot.
 |---|---|
 | `MAENDEKOLL_API_URL` | Bas-URL till backend-appen (Railway) |
 | `ADMIN_API_KEY` | Samma delade nyckel som backend-repot — skickas som `Authorization: Bearer <nyckel>` på varje anrop |
+| `MAENDEKOLL_INCLUDE_TEST_DATA` | Sätt till `true` för att inkludera testdata (`?dataset=all`) i alla GET-anrop mot bot+API:et — praktiskt lokalt under utveckling. Utelämna i Vercel (Production **och** Preview): default är skarp data (`dataset=production`), oförändrat produktionsbeteende. |
 
 Bygg en central, återanvändbar klientfunktion som lägger på auth-headern
 automatiskt, istället för att upprepa det i varje vy. Håll en `.env.example`
