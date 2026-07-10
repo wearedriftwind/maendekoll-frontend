@@ -1,6 +1,6 @@
 # Sprint 4 — Adminwebbens grund + samtliga vyer (bas-version)
 
-## Status (senast uppdaterad 2026-07-10, Story 10 klar — nästa upp: Story 11)
+## Status (senast uppdaterad 2026-07-10, Sprint 4 klar i bas-version)
 
 - **Story 1-6: Klara.** Grunden (Next.js/Vercel, Slack OAuth via Auth.js,
   `apiClient.ts`), frågehantering (`/settings/questions`),
@@ -25,7 +25,23 @@
   2025-01-06 till idag, se notis om testdata nedan) — en Recharts-bugg
   (`ResponsiveContainer` med `height="100%"` renderade ingen synlig graf)
   hittades och fixades under verifieringen, se CHANGELOG v0.9.0.
-- **Story 11, 8b, 12:** oförändrat väntande, se Byggordning nedan.
+- **Story 11: Klar.** Periodjämförelse (PR
+  https://github.com/wearedriftwind/maendekoll-frontend/pull/11), mergad till
+  `main`. Byggd direkt i den befintliga `/report`-vyn istället för en egen
+  `/report/compare`-sida — ett beslut Lars tog under arbetet med storyn:
+  ett formulär för att välja Period A/B lägger till `?aFrom=&aTo=&bFrom=&bTo=`
+  i URL:en, och samma `TrendChart`-komponent (nu generaliserad till flera
+  dataserier) ritar två linjer på en relativ tidsaxel (8 lika delar per
+  period) istället för den vanliga en-linjes helhistoriken.
+- **Sprint 4 bas-version är klar.** Story 8b (individuell historikvy) och
+  Story 12 (presentationsvy) är **pausade** — beslut av Lars 2026-07-10, tas
+  upp igen i en senare sprint. Se Byggordning nedan.
+- Mellan Story 10 och 11 tillkom även en liten, ej storybunden ändring:
+  miljövariabeln `MAENDEKOLL_INCLUDE_TEST_DATA` (satt till `true` lägger
+  `?dataset=all` på alla `apiClient.get()`-anrop, centralt i `apiClient.ts`).
+  Praktiskt för att alltid se testdata lokalt under fortsatt utveckling utan
+  att påverka produktionsbeteendet (variabeln ska inte sättas i Vercel). Se
+  CHANGELOG v0.9.1 och `.env.example`.
 
 **Notis om branch-avstämning (2026-07-10, löst):** `feature/trendgraf` och
 `feature/svarslogg` grenade båda ut från main innan den andra mergades, och
@@ -58,15 +74,13 @@ bot+API:et, inte på en Vercel preview-deploy — detta uppfyller DoD:s krav på
 "manuellt verifierad i webbläsaren mot backend-API:et" precis lika bra, utan
 återkommande Slack-konfiguration per branch.
 
-### Nästa steg — Story 11: Periodjämförelse
+### Nästa steg
 
-- **Branch:** `feature/periodjamforelse` (skapas från main).
-- **Bygger:** `/report/compare`. Låt admin välja två tidsperioder och
-  jämföra deras `/stats/aggregate`-resultat sida vid sida (medelvärde,
-  fördelning, antal svar). Samma mönster som trendgrafen för datumhantering,
-  men bara två anrop istället för en serie.
-- **Återanvänd:** `AggregateStats`-typen från `types/stats.ts` (redan byggd
-  i Story 10).
+Sprint 4:s bas-version är klar (Story 1-7, 8a, 9, 10, 11). Story 8b och 12 är
+pausade (se Byggordning nedan) — inget aktivt nästa steg i den här sprinten
+just nu. Om Story 8b eller 12 ska plockas upp igen: skapa en branch per story
+som vanligt (`feature/individuell-historik` respektive
+`feature/presentationsvy`) och följ samma mönster som övriga Rapport-vyer.
 
 ## Context
 
@@ -187,9 +201,10 @@ types/
 4. ~~Story 7 + 8a — Anställda + eskalationskontakt, samma vy~~ **Klar**
 5. ~~Story 9 — Svarslogg~~ **Klar**
 6. ~~Story 10 — Trendgraf, bygger `/report`-skalet~~ **Klar**
-7. **Story 11** — Periodjämförelse ← nästa
+7. ~~Story 11 — Periodjämförelse, byggd in i `/report` (ingen egen sida)~~ **Klar**
 8. **Story 8b** (omskriven) — Individuell historikvy (Rapport), länkad från 8a
-9. Story 12 — Presentationsvy
+   — **Pausad** 2026-07-10, beslut av Lars.
+9. Story 12 — Presentationsvy — **Pausad** 2026-07-10, beslut av Lars.
 
 ## Ändringar i Notion (görs av `notion-ops` efter denna plan)
 

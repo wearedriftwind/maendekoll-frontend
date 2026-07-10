@@ -3,6 +3,36 @@
 Alla releaser till produktion (Vercel) dokumenteras här, nyast överst.
 Se Notion-backloggen för fullständig kontext per story.
 
+## v0.10.0 – 2026-07-10
+
+Admin kan nu jämföra mående mellan två valfria perioder, direkt i trendgrafen.
+
+### Vad som är nytt
+
+- Ny "Period A" / "Period B"-väljare överst i Rapport → Trendgraf (`/report`).
+  Vid vald jämförelse ritas två linjer i samma graf på en relativ tidsaxel
+  (punkt 1–8 inom respektive period), så formen går att jämföra oavsett
+  kalenderdatum. Länk för att gå tillbaka till hela historiken.
+
+### Vad som har ändrats
+
+- Grundvyn (hela historiken, en linje) är oförändrad när ingen jämförelse
+  är vald.
+
+### Buggar fixade
+
+- Inga i denna sprint.
+
+### Annan relevant information
+
+- Omfattar Story 11 i Notion-backloggen: "Möjlighet att jämföra perioder".
+  Byggd som en del av den befintliga `/report`-vyn istället för en egen
+  sida (`/report/compare`), ett beslut Lars tog under arbetet med storyn —
+  återanvänder samma graf-komponent som trendvyn.
+- **Sprint 4 är nu klar** i sin bas-version. Story 8b (individuell
+  historikvy) och Story 12 (presentationsvy) sätts pausade och tas upp
+  igen i en senare sprint, se `.claude/plans/sprint-4.md`.
+
 ## v0.9.1 – 2026-07-10
 
 Utvecklarverktyg: enkelt sätt att slå testdata av/på globalt, utan att röra
