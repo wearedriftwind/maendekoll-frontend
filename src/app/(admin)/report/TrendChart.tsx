@@ -2,6 +2,7 @@
 
 import {
   CartesianGrid,
+  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -9,10 +10,18 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { TrendPoint } from "@/types/stats";
+import type { ChartPoint, ChartSeries } from "@/types/stats";
 
-export function TrendChart({ data }: { data: TrendPoint[] }) {
-  const hasData = data.some((point) => point.averageEmoji !== null);
+export function TrendChart({
+  data,
+  series,
+}: {
+  data: ChartPoint[];
+  series: ChartSeries[];
+}) {
+  const hasData = data.some((point) =>
+    series.some((s) => point[s.key] !== null && point[s.key] !== undefined),
+  );
 
   if (!hasData) {
     return (
@@ -35,14 +44,19 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
             }
             contentStyle={{ fontSize: 12 }}
           />
-          <Line
-            type="monotone"
-            dataKey="averageEmoji"
-            stroke="#4f46e5"
-            strokeWidth={2}
-            dot={{ r: 3 }}
-            connectNulls
-          />
+          {series.length > 1 && <Legend wrapperStyle={{ fontSize: 12 }} />}
+          {series.map((s) => (
+            <Line
+              key={s.key}
+              type="monotone"
+              dataKey={s.key}
+              name={s.label}
+              stroke={s.color}
+              strokeWidth={2}
+              dot={{ r: 3 }}
+              connectNulls
+            />
+          ))}
         </LineChart>
       </ResponsiveContainer>
     </div>
