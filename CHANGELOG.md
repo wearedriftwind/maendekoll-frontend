@@ -3,6 +3,41 @@
 Alla releaser till produktion (Vercel) dokumenteras här, nyast överst.
 Se Notion-backloggen för fullständig kontext per story.
 
+## v0.9.0 – 2026-07-10
+
+Admin kan nu se en trendgraf för mående över tid, inte bara ett totalvärde.
+
+### Vad som är nytt
+
+- Ny sida i Rapport → Trendgraf (`/report`, default-fliken): visar snittmående
+  per månad, från det äldsta registrerade svaret fram till idag.
+- Bygger serien själv genom flera parallella anrop mot `/stats/aggregate`
+  (en per månad), eftersom endpointen bara ger ett aggregat per anrop, inte
+  en tidsserie.
+
+### Vad som har ändrats
+
+- Inget i övriga vyer.
+
+### Buggar fixade
+
+- Inga i denna sprint (en Recharts-renderingsbugg upptäcktes och fixades
+  under utvecklingen, innan release — se "Annan relevant information").
+
+### Annan relevant information
+
+- Omfattar Story 10 i Notion-backloggen: "Bygg trendgraf".
+- Verifierad mot ett testdataset i databasen (748 svar, 2025-01-06 till
+  idag) för att kunna bedöma en trovärdig kurva, eftersom skarp data i
+  dagsläget bara finns i en enda månad. Testdatan är genererad via
+  backend-repots `npm run seed:test-data` och rensas med `npm run
+  clear:test-data -- --yes` när den inte behövs längre — påverkar aldrig
+  produktionsbeteendet, adminwebben visar alltid `?dataset=production`
+  (default) i skarp drift.
+- Under arbetet upptäcktes en Recharts-bugg: `ResponsiveContainer` med
+  `height="100%"` renderade ingen synlig graf. Fixat med ett fast
+  pixelvärde (`height={288}`) istället.
+
 ## v0.8.0 – 2026-07-10
 
 Admin kan nu se en logg över samtliga svar, inte bara aggregerad statistik.

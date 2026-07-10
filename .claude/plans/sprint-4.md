@@ -1,6 +1,6 @@
 # Sprint 4 — Adminwebbens grund + samtliga vyer (bas-version)
 
-## Status (senast uppdaterad 2026-07-10, testdata klar, Story 10 återupptagen)
+## Status (senast uppdaterad 2026-07-10, Story 10 klar — nästa upp: Story 11)
 
 - **Story 1-6: Klara.** Grunden (Next.js/Vercel, Slack OAuth via Auth.js,
   `apiClient.ts`), frågehantering (`/settings/questions`),
@@ -19,11 +19,12 @@
   `main`. Bygger även en egen `/report`-skalfil (nav), eftersom Story 10 —
   som normalt skulle bygga det skalet — låg pausad och obekräftad på egen
   branch när Story 9 startades (se notis nedan om branch-avstämning).
-- **Story 10 — Trendgraf: Återupptagen 2026-07-10.** Testdata finns nu i
-  Supabase (748 testsvar, 2025-01-06 till idag, se notis om testdata nedan).
-  `feature/trendgraf` mergad med main; konflikten i `report/layout.tsx` (två
-  separata nav-länkar från Story 9 och Story 10) löst manuellt — navet har nu
-  både "Trendgraf" och "Svarslogg". Fortsätter enligt "Nästa steg" nedan.
+- **Story 10: Klar.** Trendgraf (`/report`, default-fliken, PR
+  https://github.com/wearedriftwind/maendekoll-frontend/pull/9), mergad till
+  `main`. Verifierad lokalt mot testdatan i Supabase (748 testsvar,
+  2025-01-06 till idag, se notis om testdata nedan) — en Recharts-bugg
+  (`ResponsiveContainer` med `height="100%"` renderade ingen synlig graf)
+  hittades och fixades under verifieringen, se CHANGELOG v0.9.0.
 - **Story 11, 8b, 12:** oförändrat väntande, se Byggordning nedan.
 
 **Notis om branch-avstämning (2026-07-10, löst):** `feature/trendgraf` och
@@ -57,28 +58,15 @@ bot+API:et, inte på en Vercel preview-deploy — detta uppfyller DoD:s krav på
 "manuellt verifierad i webbläsaren mot backend-API:et" precis lika bra, utan
 återkommande Slack-konfiguration per branch.
 
-### Nästa steg — Story 10: Trendgraf (aktiv igen, testdata finns)
+### Nästa steg — Story 11: Periodjämförelse
 
-**Bekräftat 2026-07-10:** `GET /stats/aggregate?from=&to=` returnerar
-fortfarande ett enda aggregat per anrop, ingen tidsseriedata (oförändrat
-sedan Sprint 3). Löst genom att frontend själv bygger serien: `/report/page.tsx`
-tar reda på det äldsta svarets datum via `GET /responses`, delar in
-intervallet [äldsta svar, nu] i månadsbuckets (max 24, för att inte explodera
-om historiken blir lång) och gör ett parallellt anrop per bucket mot
-`/stats/aggregate`.
-
-- **Branch:** `feature/trendgraf`, nu mergad med main (konflikt i
-  `report/layout.tsx` löst, se branch-avstämningsnotisen ovan).
-- **Byggt på branchen:** `report/page.tsx` (månadsbucket-logik),
-  `report/TrendChart.tsx` (Recharts, klientkomponent), `types/stats.ts`.
-  `npm install recharts` klart.
-- **Kvar innan merge:**
-  1. Manuell verifiering i webbläsaren mot testdatan (748 svar,
-     2025-01-06 → idag) via en **temporär** lokal ändring
-     (`&dataset=test` på de två `/stats/aggregate`/`/responses`-anropen i
-     `report/page.tsx`) — reverteras innan commit, se notis om testdata ovan.
-  2. `npm run build`/`npm run lint` en gång till.
-  3. Commit/push/PR + CHANGELOG + Notion-uppdatering.
+- **Branch:** `feature/periodjamforelse` (skapas från main).
+- **Bygger:** `/report/compare`. Låt admin välja två tidsperioder och
+  jämföra deras `/stats/aggregate`-resultat sida vid sida (medelvärde,
+  fördelning, antal svar). Samma mönster som trendgrafen för datumhantering,
+  men bara två anrop istället för en serie.
+- **Återanvänd:** `AggregateStats`-typen från `types/stats.ts` (redan byggd
+  i Story 10).
 
 ## Context
 
@@ -198,9 +186,8 @@ types/
 3. ~~Story 6 — Skicka direkt (åtgärd i frågelistan)~~ **Klar**
 4. ~~Story 7 + 8a — Anställda + eskalationskontakt, samma vy~~ **Klar**
 5. ~~Story 9 — Svarslogg~~ **Klar**
-6. **Story 10** — Trendgraf, bygger `/report`-skalet ← pausad, kod klar på
-   egen branch, väntar på testdata (se "Nästa steg" ovan)
-7. Story 11 — Periodjämförelse
+6. ~~Story 10 — Trendgraf, bygger `/report`-skalet~~ **Klar**
+7. **Story 11** — Periodjämförelse ← nästa
 8. **Story 8b** (omskriven) — Individuell historikvy (Rapport), länkad från 8a
 9. Story 12 — Presentationsvy
 
