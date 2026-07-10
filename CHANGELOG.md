@@ -3,6 +3,35 @@
 Alla releaser till produktion (Vercel) dokumenteras här, nyast överst.
 Se Notion-backloggen för fullständig kontext per story.
 
+## v0.9.1 – 2026-07-10
+
+Utvecklarverktyg: enkelt sätt att slå testdata av/på globalt, utan att röra
+produktionsbeteendet.
+
+### Vad som är nytt
+
+- Ny miljövariabel `MAENDEKOLL_INCLUDE_TEST_DATA`. Satt till `true` lägger
+  `apiClient` automatiskt till `?dataset=all` på alla anrop mot bot+API:et,
+  så testdata syns tillsammans med skarp data — praktiskt lokalt under
+  utveckling.
+
+### Vad som har ändrats
+
+- Inget i produktionsbeteendet. Variabeln är inte satt i Vercel (Production
+  eller Preview) och ska inte behöva sättas där — default är oförändrat
+  skarp data.
+
+### Buggar fixade
+
+- Inga i denna sprint.
+
+### Annan relevant information
+
+- Inte kopplad till en enskild story i Notion-backloggen — ett litet
+  utvecklarverktyg som stöd för fortsatt arbete i Sprint 4.
+- Manuellt steg: lägg till `MAENDEKOLL_INCLUDE_TEST_DATA=true` i din egen
+  `.env.local` om du vill se testdata lokalt. Lämna den osatt i Vercel.
+
 ## v0.9.0 – 2026-07-10
 
 Admin kan nu se en trendgraf för mående över tid, inte bara ett totalvärde.
