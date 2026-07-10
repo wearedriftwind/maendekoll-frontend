@@ -6,8 +6,10 @@ export interface AggregateStats {
   distribution: Record<"1" | "2" | "3" | "4" | "5", number>;
 }
 
-export interface TrendPoint {
+export interface ChartSeries {
+  key: string;
   label: string;
-  averageEmoji: number | null;
-  totalResponses: number;
+  color: string;
 }
+
+export type ChartPoint = Record<string, string | number | null>;
