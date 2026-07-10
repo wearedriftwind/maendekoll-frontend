@@ -24,7 +24,7 @@ export function TrendChart({ data }: { data: TrendPoint[] }) {
 
   return (
     <div className="h-80 w-full rounded-lg border border-black/10 p-4 dark:border-white/10">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height={288}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
           <XAxis dataKey="label" fontSize={12} />
