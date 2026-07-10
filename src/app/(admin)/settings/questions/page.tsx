@@ -2,6 +2,7 @@ import Link from "next/link";
 import { apiClient } from "@/lib/apiClient";
 import type { Question } from "@/types/questions";
 import { createQuestion, updateQuestion } from "./actions";
+import { SendNowForm } from "./SendNowForm";
 
 const RESPONSE_TYPES = ["both", "emoji", "text"];
 
@@ -44,6 +45,8 @@ export default async function QuestionsPage() {
           Skapa fråga
         </button>
       </form>
+
+      <SendNowForm />
 
       <div className="flex flex-col gap-3">
         {questions.map((question) => (
