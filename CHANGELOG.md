@@ -3,6 +3,29 @@
 Alla releaser till produktion (Vercel) dokumenteras här, nyast överst.
 Se Notion-backloggen för fullständig kontext per story.
 
+## v0.6.0 – 2026-07-10
+
+Admin kan nu skicka en fråga direkt till alla aktiva, utan att vänta på schema.
+
+### Vad som är nytt
+
+- Nytt formulär i Inställningar → Frågor: "Skicka en fråga direkt" (textfält
+  + valfri svarstyp + knappen "Skicka nu").
+- Efter skickat visas en bekräftelse med hur många anställda som fick frågan.
+
+### Vad som har ändrats
+
+- Inget i övriga vyer.
+
+### Buggar fixade
+
+- Inga i denna sprint.
+
+### Annan relevant information
+
+- Omfattar Story 6 i Notion-backloggen: "Bygg vy för att skicka en fråga
+  direkt".
+
 ## v0.5.0 – 2026-07-09
 
 Frågor kan nu schemaläggas i adminwebben.

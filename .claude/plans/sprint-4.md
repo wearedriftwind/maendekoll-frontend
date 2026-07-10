@@ -1,41 +1,30 @@
 # Sprint 4 — Adminwebbens grund + samtliga vyer (bas-version)
 
-## Status (senast uppdaterad 2026-07-09, pausat efter Story 5)
+## Status (senast uppdaterad 2026-07-10, pausat efter Story 6)
 
-- **Story 1-5: Klara.** Grunden (Next.js/Vercel, Slack OAuth via Auth.js,
-  `apiClient.ts`), frågehantering (`/settings/questions`) och
-  schemainställningar (`/settings/questions/[id]/schedule`) är byggda,
+- **Story 1-6: Klara.** Grunden (Next.js/Vercel, Slack OAuth via Auth.js,
+  `apiClient.ts`), frågehantering (`/settings/questions`),
+  schemainställningar (`/settings/questions/[id]/schedule`) och skicka-
+  direkt (nytt formulär i `/settings/questions`, PR
+  https://github.com/wearedriftwind/maendekoll-frontend/pull/6) är byggda,
   mergade till `main` och verifierade i produktion
   (https://maendekoll-frontend.vercel.app/).
-- **Nästa upp: Story 6 — Skicka en fråga direkt.** Se "Nästa steg" nedan för
-  konkreta detaljer inför nästa session.
-- **Story 7 och framåt:** oförändrat väntande, se Byggordning nedan.
+- **Nästa upp: Story 7 — Eskalationskontakt.** Se "Nästa steg" nedan.
+- **Story 8a och framåt:** oförändrat väntande, se Byggordning nedan.
 
-### Nästa steg — Story 6: Skicka en fråga direkt
+### Nästa steg — Story 7: Eskalationskontakt
 
-- **Branch:** `feature/skicka-fraga-direkt` (samma namnkonvention som
-  `feature/fragehantering-vy`, `feature/schemainstallningar`).
-- **Endpoint:** `POST /questions/send-now` — body `{ text, response_type? }`,
-  svar `{ question_id, sent_to }`. Skapar EN NY fråga och skickar den direkt
-  till alla aktiva — separat från befintliga frågor i listan, inte en åtgärd
-  på en redan skapad fråga.
-- **Plats i UI:** enligt sektionstabellen nedan blir det en åtgärd i
-  frågelistan (`/settings/questions`), inte en egen sida. Enklast: ett eget
-  litet formulär (textfält + valfri response_type + knapp "Skicka nu") längst
-  upp eller ner på `/settings/questions/page.tsx`, bredvid "Ny fråga"-
-  formuläret men som en tydligt separat åtgärd (skiljer sig från
-  "Skapa fråga" genom att den skickar direkt).
-- **Efter lyckat anrop:** visa en bekräftelse med `sent_to`-antalet
-  (t.ex. "Skickades till 12 anställda") — kräver att server action
-  returnerar ett resultat till klienten istället för att bara `redirect`/
-  `revalidatePath` som de tidigare formulären gör. Enklast: en klient-
-  komponent runt formuläret som visar resultatet efter `useActionState`,
-  eller en enkel `?sent=N`-query-param efter redirect. Välj det som känns
-  minst krångligt givet hur `createQuestion`/`updateQuestion` redan är byggda
-  i `src/app/(admin)/settings/questions/actions.ts` — följ samma mönster om
-  möjligt istället för att introducera ett nytt.
-- **DoD (från backloggen):** Admin kan skriva och skicka en fråga direkt från
-  adminwebben, med bekräftelse på hur många som fick den.
+- **Branch:** `feature/eskalationskontakt` (samma namnkonvention som
+  tidigare storys).
+- **Endpoints:** `GET /users?role=&active=` för att lista kandidater,
+  `PATCH /users/:id/escalation-contact` för att sätta en ny — sätter denna
+  som **enda** eskalationskontakt (se "Vad vi har bestämt" i CLAUDE.md: en
+  kontakt åt gången, UI:t ska göra det uppenbart att det bytes, inte läggs
+  till).
+- **Plats i UI:** ny sida `/settings/escalation-contact` enligt
+  sektionstabellen nedan.
+- **DoD (från backloggen):** Admin kan se och byta eskalationskontakt, med
+  tydlig indikation om vem som är aktuell kontakt just nu.
 
 ## Context
 
