@@ -9,22 +9,39 @@
   https://github.com/wearedriftwind/maendekoll-frontend/pull/6) är byggda,
   mergade till `main` och verifierade i produktion
   (https://maendekoll-frontend.vercel.app/).
-- **Nästa upp: Story 7 — Eskalationskontakt.** Se "Nästa steg" nedan.
-- **Story 8a och framåt:** oförändrat väntande, se Byggordning nedan.
+- **Nästa upp: Story 7 + 8a — Anställda och eskalationskontakt, i samma vy.**
+  Se "Nästa steg" nedan.
+- **Story 9 och framåt:** oförändrat väntande, se Byggordning nedan.
 
-### Nästa steg — Story 7: Eskalationskontakt
+### Nästa steg — Story 7 + 8a: Hantera anställda (slagits ihop)
 
-- **Branch:** `feature/eskalationskontakt` (samma namnkonvention som
-  tidigare storys).
-- **Endpoints:** `GET /users?role=&active=` för att lista kandidater,
-  `PATCH /users/:id/escalation-contact` för att sätta en ny — sätter denna
-  som **enda** eskalationskontakt (se "Vad vi har bestämt" i CLAUDE.md: en
-  kontakt åt gången, UI:t ska göra det uppenbart att det bytes, inte läggs
-  till).
-- **Plats i UI:** ny sida `/settings/escalation-contact` enligt
-  sektionstabellen nedan.
-- **DoD (från backloggen):** Admin kan se och byta eskalationskontakt, med
-  tydlig indikation om vem som är aktuell kontakt just nu.
+**Beslut (2026-07-10, Lars):** Story 7 (eskalationskontakt) och Story 8a
+(hantera anställda) byggs som **en gemensam vy** istället för två separata
+sidor — samma tabell över användare används för båda syftena. Ändrar
+sektionstabellen nedan: Story 7:s path blir samma som 8a:s
+(`/settings/employees`), ingen egen `/settings/escalation-contact`-sida.
+
+- **Branch:** `feature/hantera-anstallda`.
+- **Plats i UI:** `/settings/employees` — en tabell med alla användare
+  (`GET /users`). Kolumner: namn, roll, **Aktiv** (kryssruta, pausar/
+  aktiverar via `PATCH /users/:id` med `{ active }`) och
+  **Eskalationskontakt** (kryssruta, sätter via
+  `PATCH /users/:id/escalation-contact`).
+- **Enda-kontakt-regeln:** exakt en användare kan vara eskalationskontakt.
+  Eskalationskryssrutan är semantiskt en radioknapp — att kryssa en ny rad
+  ersätter automatiskt den föregående (backend-servicen `setEscalationContact`
+  rensar övriga innan den sätter den nya), inte lägger till ytterligare en.
+  Formuläret måste göra det uppenbart att det är ett byte, inte ett
+  tillägg (se "Vad vi har bestämt" i CLAUDE.md).
+- **UX-mönster:** varje kryssruta i tabellen är sin egen mini-form (dold
+  `id`-fält + kryssruta) som skickas automatiskt vid ändring (`onChange` →
+  `requestSubmit()`), istället för en explicit "Spara"-knapp per rad — snabbare
+  för en tabell med flera rader och kryssrutor.
+- **DoD (från backloggen, båda storys):**
+  - Story 8a: Admin kan se alla anställda och pausa/aktivera dem utan att
+    röra historik.
+  - Story 7: Admin kan se och byta eskalationskontakt, med tydlig
+    indikation om vem som är aktuell kontakt just nu.
 
 ## Context
 
@@ -87,8 +104,8 @@ check. `/questions` och `/users` returnerar `snake_case`, `/responses` och
 | 4. Bygg vy för att hantera frågor | Inställningar | `/settings/questions` | Ny path. Bygger även Inställningar-skalet (nav) och gör om `(admin)/page.tsx` till en hub-sida. |
 | 5. Bygg vy för schemainställningar | Inställningar | `/settings/questions/[id]/schedule` | Ingen. |
 | 6. Bygg vy för att skicka en fråga direkt | Inställningar | `/settings/questions` (åtgärd i listan) | Blir en åtgärd i frågelistan, inte egen sida. |
-| 7. Bygg vy för att välja eskalationskontakt | Inställningar | `/settings/escalation-contact` | Ingen. |
-| 8a. *(ny story)* Bygg vy för att hantera anställda | Inställningar | `/settings/employees` | Ny: lista anställda, pausa/aktivera. Länk till 8b för full historik. |
+| 7. Bygg vy för att välja eskalationskontakt | Inställningar | `/settings/employees` | **Ändrad 2026-07-10:** ingen egen sida längre — byggs som en kolumn i samma tabell som Story 8a, se "Nästa steg" ovan. |
+| 8a. *(ny story)* Bygg vy för att hantera anställda | Inställningar | `/settings/employees` | Ny: lista anställda, pausa/aktivera + eskalationskontakt (Story 7) i samma tabell. Länk till 8b för full historik. |
 | 8b. *(omskriven, var "8. Bygg individuell historikvy")* | Rapport | `/report/employees/[id]` | Bara läsvyn kvar (svar kronologiskt) — pausa/aktivera flyttas till 8a. |
 | 9. Bygg vy för svarslogg | Rapport | `/report/responses` | Ingen. |
 | 10. Bygg trendgraf | Rapport | `/report` (default-fliken) | Bygger Rapport-skalet (nav). |
@@ -115,8 +132,7 @@ src/app/(admin)/
     layout.tsx                     # NY: delad nav mellan Inställningar-flikarna
     questions/page.tsx             # Story 4
     questions/[id]/schedule/page.tsx  # Story 5
-    escalation-contact/page.tsx    # Story 7
-    employees/page.tsx             # Story 8a
+    employees/page.tsx             # Story 7 + 8a, samma vy/tabell
   report/
     layout.tsx                     # NY: delad nav mellan Rapport-flikarna
     page.tsx                       # Story 10, trendgraf (default-flik)
@@ -137,14 +153,13 @@ types/
 1. ~~**Story 4** — Frågehantering + bygger `/settings`-skalet och gör om
    `(admin)/page.tsx` till en hub-sida.~~ **Klar**
 2. ~~Story 5 — Schemainställningar~~ **Klar**
-3. **Story 6 — Skicka direkt (åtgärd i frågelistan)** ← nästa
-4. Story 7 — Eskalationskontakt
-5. **Story 8a** (ny) — Anställda: lista + pausa/aktivera
-6. **Story 10** — Trendgraf, bygger `/report`-skalet
-7. Story 9 — Svarslogg
-8. Story 11 — Periodjämförelse
-9. **Story 8b** (omskriven) — Individuell historikvy (Rapport), länkad från 8a
-10. Story 12 — Presentationsvy
+3. ~~Story 6 — Skicka direkt (åtgärd i frågelistan)~~ **Klar**
+4. **Story 7 + 8a — Anställda + eskalationskontakt, samma vy** ← nästa
+5. **Story 10** — Trendgraf, bygger `/report`-skalet
+6. Story 9 — Svarslogg
+7. Story 11 — Periodjämförelse
+8. **Story 8b** (omskriven) — Individuell historikvy (Rapport), länkad från 8a
+9. Story 12 — Presentationsvy
 
 ## Ändringar i Notion (görs av `notion-ops` efter denna plan)
 

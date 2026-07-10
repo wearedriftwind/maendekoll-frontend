@@ -11,6 +11,9 @@ export default function SettingsLayout({
         <Link href="/settings/questions" className="font-medium">
           Frågor
         </Link>
+        <Link href="/settings/employees" className="font-medium">
+          Anställda
+        </Link>
       </nav>
       {children}
     </div>
