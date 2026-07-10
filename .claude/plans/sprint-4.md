@@ -1,6 +1,6 @@
 # Sprint 4 — Adminwebbens grund + samtliga vyer (bas-version)
 
-## Status (senast uppdaterad 2026-07-10, pausat efter Story 7 + 8a)
+## Status (senast uppdaterad 2026-07-10, pausat mitt i Story 10 i väntan på testdata)
 
 - **Story 1-6: Klara.** Grunden (Next.js/Vercel, Slack OAuth via Auth.js,
   `apiClient.ts`), frågehantering (`/settings/questions`),
@@ -14,9 +14,18 @@
   https://github.com/wearedriftwind/maendekoll-frontend/pull/7), mergad till
   `main`. Verifierad **lokalt** mot riktiga API:et (se notis om
   lokal-verifiering nedan), inte via Vercel preview.
-- **Nästa upp: Story 10 — Trendgraf**, bygger `/report`-skalet. Se
-  Byggordning nedan.
+- **Story 10 — Trendgraf: Kod byggd, INTE mergad.** Branch `feature/trendgraf`,
+  build+lint gröna. Pausad i väntan på testdata i databasen (backend-repot
+  bygger den, se notis nedan) — utan den syns grafen som praktiskt taget tom
+  eftersom riktig data i dagsläget bara finns i en enda månad (juli 2026).
+  DoD:s krav på manuell verifiering i webbläsaren är därför inte uppfyllt än.
+  Återuppta när Lars säger att testdatan finns, se "Nästa steg" nedan.
 - **Story 9, 11, 8b, 12:** oförändrat väntande, se Byggordning nedan.
+
+**Notis om testdata (2026-07-10):** Lars bygger ett testdataset (2025 till nu)
+och en reset/regenerera-mekanism i backend-repot (`maendekollen`) själv —
+frontend-repot gör inget databasarbete (se CLAUDE.md, "ingen backend-logik").
+Story 10 pausades explicit i väntan på detta, inte på grund av ett känt UI-fel.
 
 **Notis om verifieringsmetod (2026-07-10):** Vercels preview-URL:er är unika
 per branch, vilket krockar med Slack OAuths krav på en förregistrerad,
@@ -31,22 +40,26 @@ bot+API:et, inte på en Vercel preview-deploy — detta uppfyller DoD:s krav på
 "manuellt verifierad i webbläsaren mot backend-API:et" precis lika bra, utan
 återkommande Slack-konfiguration per branch.
 
-### Nästa steg — Story 10: Trendgraf
+### Nästa steg — Story 10: Trendgraf (återupptas när testdata finns)
 
-**Varning att kolla innan bygget startar:** `GET /stats/aggregate?from=&to=`
-(verifierad mot `maendekollen/src/statsService.ts` 2026-07-10) returnerar just
-nu **ett enda aggregat** för hela `[from, to]`-intervallet (`totalResponses`,
-`averageEmoji`, `distribution`, m.m.) — **ingen tidsseriedata**. En riktig
-trendgraf behöver punkter över tid (t.ex. en per vecka). Innan UI:t byggs:
-kontrollera om backend-repot hunnit lägga till bucket/gruppering (kolla
-`maendekollen/CHANGELOG.md` och `statsService.ts` på nytt), annars behöver
-frontend själv göra flera anrop med olika `from`/`to`-fönster för att bygga
-serien, eller be backend-repot om en tidsserie-variant.
+**Bekräftat 2026-07-10:** `GET /stats/aggregate?from=&to=` returnerar
+fortfarande **ett enda aggregat** per anrop, ingen tidsseriedata (oförändrat
+sedan Sprint 3). Löst genom att frontend själv bygger serien: `/report/page.tsx`
+tar reda på det äldsta svarets datum via `GET /responses`, delar in intervallet
+[äldsta svar, nu] i månadsbuckets (max 24 för att inte explodera om historiken
+blir lång) och gör ett parallellt anrop per bucket mot `/stats/aggregate`.
 
-- **Branch:** `feature/trendgraf`.
-- **Bygger:** `/report`-skalet (`report/layout.tsx`, nav mellan
-  Rapport-flikarna) + `/report/page.tsx` (default-fliken).
-- **Diagram:** Recharts, ännu inte installerat (`npm install recharts`).
+- **Branch:** `feature/trendgraf` (öppen, inte mergad).
+- **Byggt:** `report/layout.tsx` (nav-skal), `report/page.tsx`
+  (månadsbucket-logik), `report/TrendChart.tsx` (Recharts, klientkomponent),
+  `types/stats.ts`. `npm install recharts` klart.
+- **Kvar innan merge:** Manuell verifiering i webbläsaren mot en databas med
+  data spridd över flera månader (nuvarande riktiga data ligger bara i juli
+  2026, vilket gör grafen svår att bedöma visuellt — se notis om testdata
+  ovan). När testdatan finns: ladda om `http://localhost:3000/report` lokalt,
+  bekräfta att grafen visar en trovärdig kurva över flera månader, kör
+  `npm run build`/`npm run lint` en gång till (redan gröna vid pausen), och
+  slutför då commit/push/PR + CHANGELOG + Notion-uppdatering.
 
 ## Context
 
